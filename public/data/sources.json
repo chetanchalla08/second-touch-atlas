@@ -1,0 +1,62 @@
+{
+  "retrieved": "2026-10-25",
+  "demographic_years": "2020\u20132024",
+  "boundaries": "TIGER 2024",
+  "sources": [
+    {
+      "name": "ACS counties",
+      "url": "https://api.censusreporter.org/1.0/data/show/acs2024_5yr?table_ids=B01001,B17001,B08201&geo_ids=050|04000US13"
+    },
+    {
+      "name": "ACS Atlanta tracts",
+      "url": "https://api.censusreporter.org/1.0/data/show/acs2024_5yr?table_ids=B01001,B17001,B08201&geo_ids=140|05000US13121,140|05000US13089,140|05000US13067,140|05000US13135,140|05000US13063"
+    },
+    {
+      "name": "County geometry",
+      "url": "https://api.censusreporter.org/1.0/geo/show/tiger2024?geo_ids=050|04000US13"
+    },
+    {
+      "name": "Tract geometry",
+      "url": "https://api.censusreporter.org/1.0/geo/show/tiger2024?geo_ids=140|05000US13121,140|05000US13089,140|05000US13067,140|05000US13135,140|05000US13063"
+    },
+    {
+      "name": "OpenStreetMap",
+      "url": "https://overpass-api.de/api/interpreter",
+      "query": "[out:json][timeout:90];area[\"ISO3166-2\"=\"US-GA\"][admin_level=4]->.a;nwr[leisure=pitch][sport~\"soccer\"](area.a);out center tags;",
+      "license": "Open Database License, https://www.openstreetmap.org/copyright"
+    },
+    {
+      "name": "Leaflet",
+      "url": "https://leafletjs.com/download.html",
+      "version": "1.9.4",
+      "license": "BSD-2-Clause"
+    },
+    {
+      "name": "Optional street tiles",
+      "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "policy": "https://operations.osmfoundation.org/policies/tiles/"
+    }
+  ],
+  "transformations": {
+    "eligible": "round(0.8 * B01001028 + B01001029)",
+    "poverty": "B17001002 / B17001001",
+    "no_vehicle": "B08201002 / B08201001",
+    "centroid": "Area centroid of largest polygon outer ring; not population weighted",
+    "county_assignment": "Point in polygon; pitch coordinates are OSM node or way/relation bounding-box center",
+    "missing": "Invalid or missing tract observations omitted. All 159 county observations valid.",
+    "normalization": "Min-max per metric within selected demand areas; equal values give 0. Weights normalize by sum; all-zero weights give equal priority.",
+    "priority_distance": "Nearest non-unavailable mapped candidate within selected county scope, including user-excluded candidates; fixed across methods",
+    "cost": "fixed + reserved places * variable cost, per activation, charged even if underfilled",
+    "allocations": "Integer floor(eligible * takeup/100), reduced after allocation across waves",
+    "retention": "round(modeled enrollment * retention/100) separate from allocation"
+  },
+  "limitations": [
+    "Area-level socioeconomic proxies; not individual observations",
+    "County centroids substantially simplify within-county access outside five Atlanta counties",
+    "ACS age estimate assumes uniform distribution in 5\u20139 band; margins of error not propagated",
+    "OSM coverage incomplete; mapped fields unconfirmed and adjacent pitches may share a venue",
+    "All operating inputs illustrative or proposal references; no validated impact claims",
+    "Heuristic is not mathematically optimal; no travel-time or road routing model",
+    "Referee wages and coaching pipeline budgets excluded from Starter Squads delivery scope"
+  ]
+}
